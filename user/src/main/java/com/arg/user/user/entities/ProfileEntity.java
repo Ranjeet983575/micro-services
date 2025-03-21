@@ -2,6 +2,7 @@ package com.arg.user.user.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class ProfileEntity {
     private String profilePic;
     private String description;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "profile")
     private UserEntity user;
 

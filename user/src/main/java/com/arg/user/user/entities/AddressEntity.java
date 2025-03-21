@@ -19,7 +19,7 @@ public class AddressEntity {
     private int pin;
     private String contact;
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToOne(mappedBy = "address")
     private UserEntity user;
 
