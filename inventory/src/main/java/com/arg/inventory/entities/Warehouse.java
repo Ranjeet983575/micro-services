@@ -1,10 +1,15 @@
 package com.arg.inventory.entities;
 
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.List;
+
+@Entity
+@Table(name = "arg_inventory_warehouse")
+@Data
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,5 +17,9 @@ public class Warehouse {
 
     private String name;
     private String location;
+
+    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private List<Inventory> inventories;
 }
 
