@@ -6,6 +6,7 @@ import com.arg.inventory.dto.ProductDto;
 import com.arg.inventory.entities.Product;
 import com.arg.inventory.services.CategoryService;
 import com.arg.inventory.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,10 +24,10 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> saveProduct(@RequestBody ProductDto productDto) {
-        Product product = productService.saveProduct(productDto);
+    public ResponseEntity<ApiResponse<Object>> saveProduct(@Valid @RequestBody ProductDto productDto) {
+        //Product product = productService.saveProduct(productDto);
         ApiResponse<Object> data = ApiResponse.builder()
-                .message(AppConstants.SUCCESS).status("200").data(product).build();
+                .message(AppConstants.SUCCESS).status("200").data(null).build();
         return ResponseEntity.ok(data);
     }
 
