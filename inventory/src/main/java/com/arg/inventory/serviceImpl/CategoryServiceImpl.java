@@ -1,7 +1,7 @@
 package com.arg.inventory.serviceImpl;
 
 import com.arg.inventory.entities.Category;
-import com.arg.inventory.exceptions.CategoryAlreadyExistsException;
+import com.arg.inventory.exceptions.AlreadyExistsException;
 import com.arg.inventory.repositories.CategoryRepository;
 import com.arg.inventory.services.CategoryService;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category createCategory(Category category) {
         if (categoryRepository.existsByName(category.getName())) {
-            throw new CategoryAlreadyExistsException("Category with name '" + category.getName() + "' already exists.");
+            throw new AlreadyExistsException("Category with name '" + category.getName() + "' already exists.");
         }
         return categoryRepository.save(category);
     }

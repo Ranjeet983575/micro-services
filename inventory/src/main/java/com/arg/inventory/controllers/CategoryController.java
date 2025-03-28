@@ -1,9 +1,9 @@
 package com.arg.inventory.controllers;
 
 import com.arg.inventory.entities.Category;
-import com.arg.inventory.exceptions.CategoryAlreadyExistsException;
+import com.arg.inventory.exceptions.AlreadyExistsException;
 import com.arg.inventory.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/category")
+@AllArgsConstructor
 public class CategoryController {
-    @Autowired
-    private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    private final CategoryService categoryService;
 
     @GetMapping
     public List<Category> getAllCategories() {
@@ -35,12 +32,8 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
-        try {
-            Category newCategory = categoryService.createCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
-        } catch (CategoryAlreadyExistsException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+        Category newCategory = categoryService.createCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
     }
 
     @PutMapping("/{id}")

@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ms_inventory
     username: postgres
-    password: Anudip@123
+    password: Ranjeet@123#
   jpa:
     hibernate:
       ddl-auto: update
