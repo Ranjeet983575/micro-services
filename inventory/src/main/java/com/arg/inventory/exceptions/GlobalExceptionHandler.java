@@ -10,7 +10,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ApiResponse> handleCategoryAlreadyExists(AlreadyExistsException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleCategoryAlreadyExists(AlreadyExistsException ex) {
+        ApiResponse<Object> build = ApiResponse.builder().message(ex.getMessage())
+                .status("401").build();
+        return ResponseEntity.ok(build);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCategoryAlreadyExists(NotFoundException ex) {
         ApiResponse<Object> build = ApiResponse.builder().message(ex.getMessage())
                 .status("401").build();
         return ResponseEntity.ok(build);

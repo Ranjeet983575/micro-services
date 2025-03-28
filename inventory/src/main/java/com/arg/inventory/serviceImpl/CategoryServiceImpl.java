@@ -23,8 +23,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<Category> getCategoryById(Long id) {
-        return categoryRepository.findById(id);
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new AlreadyExistsException("Category Not Found with id " + id));
+
     }
 
     @Override
@@ -36,12 +37,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Long id, Category categoryDetails) {
-        return categoryRepository.findById(id).map(category -> {
-            category.setName(categoryDetails.getName());
-            category.setDescription(categoryDetails.getDescription());
-            return categoryRepository.save(category);
-        }).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+    public Category updateCategory(Long id, Category category) {
+        Category category1 = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+        category1.setName(category.getName());
+        category1.setDescription(category.getDescription());
+        return categoryRepository.save(category1);
     }
 
     @Override

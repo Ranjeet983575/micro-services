@@ -1,7 +1,8 @@
 package com.arg.inventory.controllers;
 
+import com.arg.inventory.constants.AppConstants;
+import com.arg.inventory.dto.ApiResponse;
 import com.arg.inventory.entities.Category;
-import com.arg.inventory.exceptions.AlreadyExistsException;
 import com.arg.inventory.services.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,35 +20,42 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<ApiResponse<Object>> getAllCategories() {
+        List<Category> allCategories = categoryService.getAllCategories();
+        ApiResponse<Object> data = ApiResponse.builder()
+                .message(AppConstants.SUCCESS).status("200").data(allCategories).build();
+        return ResponseEntity.ok(data);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<Object>> getCategoryById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        ApiResponse<Object> data = ApiResponse.builder()
+                .message(AppConstants.SUCCESS).status("200").data(category).build();
+        return ResponseEntity.ok(data);
     }
 
-
     @PostMapping
-    public ResponseEntity<?> createCategory(@RequestBody Category category) {
+    public ResponseEntity<ApiResponse<Object>> createCategory(@RequestBody Category category) {
         Category newCategory = categoryService.createCategory(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
+        ApiResponse<Object> data = ApiResponse.builder()
+                .message(AppConstants.SUCCESS).status("200").data(newCategory).build();
+        return ResponseEntity.ok(data);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
-        try {
-            return ResponseEntity.ok(categoryService.updateCategory(id, categoryDetails));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ApiResponse<Object>> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
+        Category category = categoryService.updateCategory(id, categoryDetails);
+        ApiResponse<Object> data = ApiResponse.builder()
+                .message(AppConstants.SUCCESS).status("200").data(category).build();
+        return ResponseEntity.ok(data);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.noContent().build();
+        ApiResponse<Object> data = ApiResponse.builder()
+                .message(AppConstants.SUCCESS).status("200").data(null).build();
+        return ResponseEntity.ok(data);
     }
 }

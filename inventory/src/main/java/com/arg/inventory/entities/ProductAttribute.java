@@ -14,6 +14,7 @@ public class ProductAttribute {
     private Long id;
 
     private String attributeName;
+    private String attributeValue;
 
     @JsonIgnore
     @ManyToOne
