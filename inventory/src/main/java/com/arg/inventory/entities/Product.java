@@ -15,8 +15,12 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", length = 300)
     private String name;
     private String sku;
+
+    @Column(name = "description", length = 2000)
     private String description;
 
     @JsonIgnore

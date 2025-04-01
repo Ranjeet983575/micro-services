@@ -18,7 +18,6 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-
     private CategoryService categoryService;
 
     @Override
@@ -43,17 +42,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, Product productDetails) {
+    public Product updateProduct(Long id, ProductDto productDetails) {
         Product product = getProductById(id);
+        Category category = categoryService.getCategoryById(productDetails.getCategoryId());
         product.setName(productDetails.getName());
         product.setDescription(productDetails.getDescription());
-        product.setCategory(productDetails.getCategory());
-        product.setProductVariants(productDetails.getProductVariants());
+        product.setCategory(category);
         return productRepository.save(product);
     }
 
     @Override
     public void deleteProduct(Long id) {
-       productRepository.deleteById(id);
+        productRepository.deleteById(id);
     }
 }

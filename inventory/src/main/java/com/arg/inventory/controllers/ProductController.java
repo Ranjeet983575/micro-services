@@ -4,11 +4,9 @@ import com.arg.inventory.constants.AppConstants;
 import com.arg.inventory.dto.ApiResponse;
 import com.arg.inventory.dto.ProductDto;
 import com.arg.inventory.entities.Product;
-import com.arg.inventory.services.CategoryService;
 import com.arg.inventory.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,8 +54,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Product>> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
-        Product updatedProduct = productService.updateProduct(id, productDetails);
+    public ResponseEntity<ApiResponse<Product>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+        Product updatedProduct = productService.updateProduct(id, productDto);
         ApiResponse<Product> response = ApiResponse.<Product>builder()
                 .message(AppConstants.SUCCESS)
                 .status("200")
