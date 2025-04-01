@@ -8,27 +8,72 @@ import com.arg.inventory.services.CategoryService;
 import com.arg.inventory.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
 @AllArgsConstructor
 public class ProductController {
 
-    private final CategoryService categoryService;
 
-    private final ProductService productService;
+    private ProductService productService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> saveProduct(@Valid @RequestBody ProductDto productDto) {
-        //Product product = productService.saveProduct(productDto);
+        Product product = productService.saveProduct(productDto);
         ApiResponse<Object> data = ApiResponse.builder()
-                .message(AppConstants.SUCCESS).status("200").data(null).build();
+                .message(AppConstants.SUCCESS)
+                .status("200")
+                .data(product)
+                .build();
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Product>>> getAllProducts() {
+        List<Product> products = productService.getAllProducts();
+        ApiResponse<List<Product>> response = ApiResponse.<List<Product>>builder()
+                .message(AppConstants.SUCCESS)
+                .status("200")
+                .data(products)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Product>> getProductById(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+        ApiResponse<Product> response = ApiResponse.<Product>builder()
+                .message(AppConstants.SUCCESS)
+                .status("200")
+                .data(product)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Product>> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+        Product updatedProduct = productService.updateProduct(id, productDetails);
+        ApiResponse<Product> response = ApiResponse.<Product>builder()
+                .message(AppConstants.SUCCESS)
+                .status("200")
+                .data(updatedProduct)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .message(AppConstants.SUCCESS)
+                .status("200")
+                .data("Product deleted successfully")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }
