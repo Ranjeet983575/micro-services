@@ -5,6 +5,7 @@ import com.arg.inventory.dto.ApiResponse;
 import com.arg.inventory.dto.WarehouseDto;
 import com.arg.inventory.entities.Warehouse;
 import com.arg.inventory.services.WarehouseService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class WarehouseController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> createWarehouse(@RequestBody WarehouseDto dto) {
+    public ResponseEntity<ApiResponse<Object>> createWarehouse(@Valid @RequestBody WarehouseDto dto) {
         Warehouse newWarehouse = warehouseService.saveWarehouse(dto);
         ApiResponse<Object> data = ApiResponse.builder()
                 .message(AppConstants.SUCCESS).status("200").data(newWarehouse).build();
