@@ -1,0 +1,27 @@
+server:
+  port: 8010
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8000/eureka/
+
+
+spring:
+  application:
+    name: ms-gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: inventory
+          uri: http://localhost:8092
+          predicates:
+            - Path=/inventory/**
+        - id: user
+          uri: http://localhost:8091
+          predicates:
+            - Path=/user/**
