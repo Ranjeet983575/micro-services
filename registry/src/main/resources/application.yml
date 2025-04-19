@@ -1,11 +1,14 @@
 spring:
   application:
-    name:registry
+    name: REGISTRY-SERVICE
 
 server:
-  port: 8000
+  port: 8761
 
 eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    prefer-ip-address: true

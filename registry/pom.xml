@@ -11,7 +11,7 @@
     <groupId>com.ms.registry</groupId>
     <artifactId>registry</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>registry</name>
+    <name>REGISTRY-SERVICE</name>
     <description>Microservice Eruka</description>
     <url/>
     <licenses>
