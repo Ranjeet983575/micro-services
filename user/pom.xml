@@ -11,7 +11,7 @@
     <groupId>com.arg.user</groupId>
     <artifactId>user</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>user</name>
+    <name>USER-SERVICE</name>
     <description>User management Project</description>
     <url/>
     <licenses>

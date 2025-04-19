@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/ms/user/profile")
+@RequestMapping("/user/profile")
 public class ProfileController {
 
     @Autowired
