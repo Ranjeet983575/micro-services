@@ -4,13 +4,13 @@ import com.arg.inventory.constants.AppConstants;
 import com.arg.inventory.dto.ApiResponse;
 import com.arg.inventory.entities.Category;
 import com.arg.inventory.services.CategoryService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/category")
@@ -20,6 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
+    @RateLimiter(name = "myRateLimiter", fallbackMethod = "rateLimiterFallback")
     public ResponseEntity<ApiResponse<Object>> getAllCategories() {
         List<Category> allCategories = categoryService.getAllCategories();
         ApiResponse<Object> data = ApiResponse.builder()
@@ -58,4 +59,10 @@ public class CategoryController {
                 .message(AppConstants.SUCCESS).status("200").data(null).build();
         return ResponseEntity.ok(data);
     }
+
+
+    public String rateLimiterFallback(Throwable t) {
+        return "⚠\uFE0F Too many requests! Please try again later.";
+    }
+
 }

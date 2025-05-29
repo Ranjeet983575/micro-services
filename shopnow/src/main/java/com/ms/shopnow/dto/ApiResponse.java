@@ -1,4 +1,4 @@
-package com.arg.user.user.dto;
+package com.ms.shopnow.dto;
 
 import lombok.*;
 
@@ -10,6 +10,5 @@ import lombok.*;
 public class ApiResponse<T> {
     private String status;
     private String message;
-    private boolean success;
     private T data;
 }
