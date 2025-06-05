@@ -66,7 +66,7 @@ public class OrderController {
             response = productClient.getAllCategory();
         } catch (Exception e) {
 
-            System.out.println("ERRORRRR" + e);
+            System.out.println("ERROR" + e);
         }
         return ResponseEntity.ok(response);
     }
