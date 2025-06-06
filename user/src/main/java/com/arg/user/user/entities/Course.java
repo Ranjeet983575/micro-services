@@ -23,17 +23,16 @@ public class Course {
     @JsonBackReference
     private Set<Student> students = new HashSet<>();
 
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Course)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
-        return Objects.equals(id, course.id);
+        return Objects.equals(id, course.id) && Objects.equals(title, course.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, title);
     }
-
 }

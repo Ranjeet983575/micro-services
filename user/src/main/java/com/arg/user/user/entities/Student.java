@@ -16,9 +16,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-
     private String name;
-
     @ManyToMany
     @JoinTable(
             name = "student_course", // join table name
@@ -28,16 +26,16 @@ public class Student {
     @JsonManagedReference
     private Set<Course> courses = new HashSet<>();
 
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Student)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id);
+        return Objects.equals(id, student.id) && Objects.equals(name, student.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name);
     }
 }
