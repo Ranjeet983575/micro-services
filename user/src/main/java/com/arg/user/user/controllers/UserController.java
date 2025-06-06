@@ -19,9 +19,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> saveUser(@RequestBody UserEntity user) {
+    public ResponseEntity<ApiResponse<UserEntity>> saveUser(@RequestBody UserEntity user) {
         UserEntity userEntity = userService.saveUser(user);
-        ApiResponse<Object> build = ApiResponse.builder()
+        ApiResponse<UserEntity> build = ApiResponse.<UserEntity>builder()
                 .data(userEntity)
                 .success(true)
                 .build();
@@ -42,9 +42,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<ApiResponse<UserEntity>> deleteUser(@PathVariable UUID userId) {
         userService.delete(userId);
-        return ResponseEntity.ok(ApiResponse.builder().success(true).build());
+        return ResponseEntity.ok(ApiResponse.<UserEntity>builder().success(true).build());
     }
 
 
