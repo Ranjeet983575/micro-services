@@ -13,6 +13,10 @@ spring:
       ddl-auto: update
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    user:
+      name: admin
+      password: admin
 
 product:
   service:

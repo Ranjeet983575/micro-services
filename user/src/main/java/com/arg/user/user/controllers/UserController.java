@@ -18,14 +18,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/sign-in")
     public ResponseEntity<ApiResponse<UserEntity>> saveUser(@RequestBody UserEntity user) {
-        UserEntity userEntity = userService.saveUser(user);
-        ApiResponse<UserEntity> build = ApiResponse.<UserEntity>builder()
-                .data(userEntity)
-                .success(true)
-                .build();
-        return new ResponseEntity<>(build, HttpStatus.CREATED);
+//        UserEntity userEntity = userService.saveUser(user);
+//        ApiResponse<UserEntity> build = ApiResponse.<UserEntity>builder()
+//                .data(userEntity)
+//                .success(true)
+//                .build();
+//        return new ResponseEntity<>(build, HttpStatus.CREATED);
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @GetMapping
