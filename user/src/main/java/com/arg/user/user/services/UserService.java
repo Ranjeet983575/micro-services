@@ -2,6 +2,7 @@ package com.arg.user.user.services;
 
 import com.arg.user.user.entities.UserEntity;
 
+
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,5 @@ public interface UserService {
     List<UserEntity> getAllUser();
 
     void delete(UUID userId);
-
 
 }

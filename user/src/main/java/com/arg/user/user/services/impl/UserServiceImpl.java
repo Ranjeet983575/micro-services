@@ -6,6 +6,7 @@ import com.arg.user.user.exception.ResourceNotFoundException;
 import com.arg.user.user.respositories.UserRepository;
 import com.arg.user.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +16,10 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public UserEntity saveUser(UserEntity user) {
@@ -24,7 +28,7 @@ public class UserServiceImpl implements UserService {
                 role.setUser(user);
             }
         }
-        
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -48,4 +52,5 @@ public class UserServiceImpl implements UserService {
     public void delete(UUID userId) {
         userRepository.deleteById(userId);
     }
+
 }

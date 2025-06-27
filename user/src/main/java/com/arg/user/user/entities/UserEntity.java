@@ -18,6 +18,8 @@ public class UserEntity {
     private String name;
     private String email;
     private String status;
+    private String password;
+
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
