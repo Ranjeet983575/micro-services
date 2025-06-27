@@ -1,11 +1,17 @@
 package com.arg.user.user.controllers;
 
+import com.arg.user.user.Auth.JwtUtil;
+import com.arg.user.user.Auth.LoginRequest;
+import com.arg.user.user.Auth.TokenResponse;
 import com.arg.user.user.dto.ApiResponse;
 import com.arg.user.user.entities.UserEntity;
 import com.arg.user.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +24,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
     @PostMapping("/sign-in")
     public ResponseEntity<ApiResponse<UserEntity>> saveUser(@RequestBody UserEntity user) {
         UserEntity userEntity = userService.saveUser(user);
@@ -27,6 +39,32 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(build, HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<TokenResponse>> login(@RequestBody LoginRequest loginRequest) {
+
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
+
+        if (auth.isAuthenticated()) {
+            String token = jwtUtil.generateToken(loginRequest.getEmail());
+            ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
+                    .data(new TokenResponse(token))
+                    .message("Login Successfully")
+                    .success(true)
+                    .status("200")
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } else {
+            ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
+                    .success(false)
+                    .message("Invalid Credentials")
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
 
     @GetMapping
     public ResponseEntity<List<UserEntity>> getAllUser() {
