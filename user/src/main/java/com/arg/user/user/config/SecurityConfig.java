@@ -1,5 +1,6 @@
 package com.arg.user.user.config;
 
+import com.arg.user.user.Auth.CustomAccessDeniedHandler;
 import com.arg.user.user.Auth.JwtAuthFilter;
 import com.arg.user.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,19 +29,24 @@ public class SecurityConfig {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtAuthFilter jwtAuthFilter;
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/sign-in", "/user/login")
-                        .permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/user/sign-in", "/user/login").permitAll()
+//                        .requestMatchers("/user/student").hasRole("TESTER")
+                                .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .httpBasic(Customizer.withDefaults())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable());
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

@@ -31,7 +31,7 @@ public class UserEntity {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProfileEntity profile;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<RoleEntity> roles;
 

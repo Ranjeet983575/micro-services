@@ -4,7 +4,6 @@ import com.arg.user.user.entities.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -20,10 +19,9 @@ public class AuthUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return user.getRoles().stream()
-//                .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getRole().toUpperCase())
-//                .collect(Collectors.toList());
-        return new ArrayList<>();
+        return user.getRoles().stream()
+                .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getRole().toUpperCase())
+                .collect(Collectors.toList());
     }
 
     @Override

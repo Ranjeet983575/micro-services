@@ -2,24 +2,32 @@ package com.arg.user.user.Auth;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
+import java.util.Base64;
 
 @Component
 public class JwtUtil {
 
-    private final String secret = "MySuperSecretKeyForJwtMySuperSecretKeyForJwt";
-    private final long expiration = 1000 * 60; // 10 hours
 
-    private Key getSignKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+    private String secret = "G6wU9zUeRPmOS8xGHibAi56V4UYHY4KnDk3t7zFYzE8=";
+
+    private final long expiration = 1000 * 60 * 10;
+
+    private SecretKey getSignKey() {
+        byte[] decodedKey = Base64.getDecoder().decode(secret);
+        return Keys.hmacShaKeyFor(decodedKey);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -27,20 +35,31 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return extractAllClaims(token).getSubject();
+    }
+
+    public List<String> extractRoles(String token) {
+        return extractAllClaims(token).get("roles", List.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+            extractAllClaims(token); // If parsing works, token is valid
             return true;
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        return claimsResolver.apply(extractAllClaims(token));
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

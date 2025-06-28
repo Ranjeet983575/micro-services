@@ -4,6 +4,7 @@ import com.arg.user.user.dto.StudentDto;
 import com.arg.user.user.entities.Student;
 import com.arg.user.user.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class StudentController {
     StudentService studentService;
 
     @PostMapping()
+    @PreAuthorize("hasRole('TESTER')")
     public Student createStudent(@RequestBody StudentDto studentDto) {
         return studentService.createStudent(studentDto);
     }

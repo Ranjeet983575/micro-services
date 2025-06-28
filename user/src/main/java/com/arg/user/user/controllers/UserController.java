@@ -1,5 +1,6 @@
 package com.arg.user.user.controllers;
 
+import com.arg.user.user.Auth.AuthUserDetails;
 import com.arg.user.user.Auth.JwtUtil;
 import com.arg.user.user.Auth.LoginRequest;
 import com.arg.user.user.Auth.TokenResponse;
@@ -12,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +33,7 @@ public class UserController {
 
     @Autowired
     JwtUtil jwtUtil;
+
 
     @PostMapping("/sign-in")
     public ResponseEntity<ApiResponse<UserEntity>> saveUser(@RequestBody UserEntity user) {
@@ -48,7 +53,13 @@ public class UserController {
         );
 
         if (auth.isAuthenticated()) {
-            String token = jwtUtil.generateToken(loginRequest.getEmail());
+
+            List<String> roles = auth.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
+            String token = jwtUtil.generateToken(loginRequest.getEmail(), roles);
             ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
                     .data(new TokenResponse(token))
                     .message("Login Successfully")
