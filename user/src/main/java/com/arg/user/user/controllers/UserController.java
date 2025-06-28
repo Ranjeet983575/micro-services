@@ -1,9 +1,6 @@
 package com.arg.user.user.controllers;
 
-import com.arg.user.user.Auth.AuthUserDetails;
-import com.arg.user.user.Auth.JwtUtil;
-import com.arg.user.user.Auth.LoginRequest;
-import com.arg.user.user.Auth.TokenResponse;
+import com.arg.user.user.Auth.*;
 import com.arg.user.user.dto.ApiResponse;
 import com.arg.user.user.entities.UserEntity;
 import com.arg.user.user.services.UserService;
@@ -30,6 +27,9 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Autowired
     JwtUtil jwtUtil;
@@ -60,8 +60,9 @@ public class UserController {
                     .toList();
 
             String token = jwtUtil.generateToken(loginRequest.getEmail(), roles);
+            String refreshToken = jwtUtil.generateRefreshToken(loginRequest.getEmail());
             ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
-                    .data(new TokenResponse(token))
+                    .data(new TokenResponse(token, refreshToken))
                     .message("Login Successfully")
                     .success(true)
                     .status("200")
@@ -71,6 +72,51 @@ public class UserController {
             ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
                     .success(false)
                     .message("Invalid Credentials")
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponse<TokenResponse>> refreshAccessToken(@RequestBody TokenRequest tokenRequest) {
+
+        String refreshToken = tokenRequest.getRefreshToken();
+
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
+                    .success(false)
+                    .message("Refresh token is missing")
+                    .status("400")
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+
+        if (jwtUtil.validateToken(refreshToken)) {
+            String username = jwtUtil.extractUsername(refreshToken);
+
+            var userDetails = userDetailsService.loadUserByUsername(username);
+
+            List<String> roles = userDetails.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
+            String newAccessToken = jwtUtil.generateToken(username, roles);
+
+            ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
+                    .data(new TokenResponse(newAccessToken, refreshToken)) // You can rotate refresh token if desired
+                    .message("Token refreshed successfully")
+                    .success(true)
+                    .status("200")
+                    .build();
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } else {
+            ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
+                    .success(false)
+                    .message("Invalid or expired refresh token")
+                    .status("401")
                     .build();
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }

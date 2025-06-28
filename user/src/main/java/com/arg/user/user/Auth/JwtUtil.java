@@ -2,7 +2,6 @@ package com.arg.user.user.Auth;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -17,7 +16,8 @@ public class JwtUtil {
 
     private String secret = "G6wU9zUeRPmOS8xGHibAi56V4UYHY4KnDk3t7zFYzE8=";
 
-    private final long expiration = 1000 * 60 * 10;
+    private final long expiration = 1000 * 30;
+    private final long refreshExpiration = 1000 * 60 * 60 * 24 * 7; // 7 days
 
     private SecretKey getSignKey() {
         byte[] decodedKey = Base64.getDecoder().decode(secret);
@@ -30,6 +30,15 @@ public class JwtUtil {
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
