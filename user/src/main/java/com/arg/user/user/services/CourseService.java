@@ -7,4 +7,6 @@ import java.util.List;
 public interface CourseService {
 
     public List<Course> findAllCourse();
+
+    public Course save(Course course);
 }

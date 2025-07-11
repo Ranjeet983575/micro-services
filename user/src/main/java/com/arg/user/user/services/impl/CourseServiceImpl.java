@@ -18,4 +18,9 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> findAllCourse() {
         return courseRepository.findAll();
     }
+
+    @Override
+    public Course save(Course course) {
+        return courseRepository.save(course);
+    }
 }
