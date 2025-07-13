@@ -3,10 +3,13 @@ package com.arg.user.user.controllers;
 import com.arg.user.user.entities.Course;
 import com.arg.user.user.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/user/course")
@@ -21,14 +24,10 @@ public class CourseController {
         return courseService.findAllCourse();
     }
 
-    @PostMapping()
-    public Course saveCourse(@RequestBody Course course) {
-        for (int i = 1; i <= 1000; i++) {
-            Course c = new Course();
-            c.setTitle("Java-" + i);
-            c.setStudents(null);
-            courseService.save(c);
-        }
-        return null;
+    @GetMapping(value = "list", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> getProducts() {
+        return Flux.just("Java", "C", "Cpp", "Oracle", "Python")
+                .map(String::toUpperCase)
+                .delayElements(Duration.ofMillis(500));
     }
 }

@@ -16,7 +16,7 @@ public class JwtUtil {
 
     private String secret = "G6wU9zUeRPmOS8xGHibAi56V4UYHY4KnDk3t7zFYzE8=";
 
-    private final long expiration = 1000 * 60 * 5;
+    private final long expiration = 1000 * 60 * 60 * 24 * 1;
     private final long refreshExpiration = 1000 * 60 * 60 * 24 * 7; // 7 days
 
     private SecretKey getSignKey() {
