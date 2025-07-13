@@ -60,17 +60,41 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
+//    @Override
+//    public Flux<Student> findAllStudentStream() {
+//        return Flux.fromIterable(studentRepository.findAll())
+//                .concatMap(student ->
+//                        Mono.fromCallable(() -> {
+//                            processCustomer(student.getId());
+//                            student.setName(student.getName().toUpperCase());
+//                            return student;
+//                        }).subscribeOn(Schedulers.boundedElastic())
+//                );
+//    }
+
     @Override
     public Flux<Student> findAllStudentStream() {
-        return Flux.fromIterable(studentRepository.findAll())
-                .concatMap(student ->
+        return Flux.fromIterable(studentRepository.findAll()) // Step 1: Get all students (blocking)
+                .concatMap(student ->                         // Step 2: Process each student in sequence
                         Mono.fromCallable(() -> {
-                            processCustomer(student.getId());
-                            student.setName(student.getName().toUpperCase());
-                            return student;
-                        }).subscribeOn(Schedulers.boundedElastic())
+                                    // Simulate a failure for a specific student (for example purposes)
+                                    if (student.getId() == 3) {
+                                        throw new RuntimeException("Failed to process student with ID: " + student.getId());
+                                    }
+
+                                    processCustomer(student.getId()); // Simulate long processing
+                                    student.setName(student.getName().toUpperCase());
+                                    return student;
+                                })
+                                .subscribeOn(Schedulers.boundedElastic()) // Offload to avoid blocking Netty
+                                .onErrorResume(e -> {
+                                    // Handle error: log and skip this student
+                                    System.err.println("⚠️ Error processing student " + student.getId() + ": " + e.getMessage());
+                                    return Mono.empty(); // Skip this student
+                                })
                 );
     }
+
 
     private static void processCustomer(Long id) {
         try {
