@@ -9,6 +9,7 @@ import com.arg.user.user.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.HashSet;
@@ -59,6 +60,27 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll();
     }
 
+    @Override
+    public Flux<Student> findAllStudentStream() {
+        return Flux.fromIterable(studentRepository.findAll())
+                .concatMap(student ->
+                        Mono.fromCallable(() -> {
+                            processCustomer(student.getId());
+                            student.setName(student.getName().toUpperCase());
+                            return student;
+                        }).subscribeOn(Schedulers.boundedElastic())
+                );
+    }
+
+    private static void processCustomer(Long id) {
+        try {
+            System.out.println("Processing customer " + id);
+            Thread.sleep(500); // Simulated blocking delay
+            System.out.println("Finished customer " + id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

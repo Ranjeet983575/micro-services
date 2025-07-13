@@ -14,5 +14,7 @@ public interface StudentService {
 
     public List<Student> findAllStudent();
 
+    public Flux<Student> findAllStudentStream();
+
 
 }
