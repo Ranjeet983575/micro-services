@@ -6,6 +6,7 @@ import com.arg.order.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class OrderController {
     private final OrderService service;
 
     @PostMapping
-    public ResponseEntity<Order> create(@RequestBody OrderDto order) {
+    public ResponseEntity<Mono<Order>> create(@RequestBody OrderDto order) {
         return ResponseEntity.ok(service.createOrder(order));
     }
 

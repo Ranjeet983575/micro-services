@@ -1,5 +1,6 @@
 package com.arg.order.entities;
 
+import com.arg.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,6 +22,9 @@ public class Order {
     private Long productId;
     private Integer quantity;
     private Double price;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+    private String description;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
