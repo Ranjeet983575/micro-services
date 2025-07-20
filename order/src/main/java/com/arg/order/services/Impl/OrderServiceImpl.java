@@ -11,7 +11,6 @@ import com.arg.order.services.OrderService;
 import com.arg.order.services.PaymentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -23,30 +22,37 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentService paymentService;
 
     @Override
-    public Mono<Order> createOrder(OrderDto order) {
+    public Order createOrder(OrderDto orderDto) {
+        // Build Order
         Order newOrder = new Order();
-        newOrder.setCustomerName(order.getCustomerName());
-        newOrder.setQuantity(order.getQuantity());
-        newOrder.setPrice(order.getPrice());
-        newOrder.setProductId(order.getProductId());
+        newOrder.setCustomerName(orderDto.getCustomerName());
+        newOrder.setQuantity(orderDto.getQuantity());
+        newOrder.setPrice(orderDto.getPrice());
+        newOrder.setProductId(orderDto.getProductId());
         newOrder.setStatus(OrderStatus.CREATED);
 
-        Order save = repo.save(newOrder);
-        PaymentRequestDto request = new PaymentRequestDto();
-        request.setAmount(order.getPrice() * order.getQuantity());
-        request.setPaymentMethod("CARD");
-        request.setOrderId(save.getId());
+        Order savedOrder = repo.save(newOrder);
 
-        return paymentService.makePayment(request)
-                .map(response -> save)
-                .onErrorResume(e -> {
-                    System.out.println("Error Occurred while Payment");
-                    save.setStatus(OrderStatus.FAILED);
-                    save.setDescription("Error while payment : " + e.getMessage());
-                    repo.save(save);
-                    return Mono.just(save);
-                });
+        // Prepare Payment Request
+        PaymentRequestDto paymentRequest = new PaymentRequestDto();
+        paymentRequest.setAmount(savedOrder.getPrice() * savedOrder.getQuantity());
+        paymentRequest.setPaymentMethod("CARD");
+        paymentRequest.setOrderId(savedOrder.getId());
+
+        try {
+            PaymentResponseDto paymentResponse = paymentService.makePayment(paymentRequest).block();
+            savedOrder.setStatus(OrderStatus.PAYMENT);
+            System.out.println("Payment Response: " + paymentResponse);
+            return repo.save(savedOrder);
+        } catch (Exception e) {
+            savedOrder.setStatus(OrderStatus.FAILED);
+            savedOrder.setDescription("Payment failed: " + e.getMessage());
+            repo.save(savedOrder);
+            System.err.println("Payment failed: " + e.getMessage());
+            return savedOrder;
+        }
     }
+
 
     @Override
     public Order getOrderById(Long id) {

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface OrderService {
-    Mono<Order> createOrder(OrderDto order);
+    Order createOrder(OrderDto order);
 
     Order getOrderById(Long id);
 

@@ -18,7 +18,7 @@ public class OrderController {
     private final OrderService service;
 
     @PostMapping
-    public ResponseEntity<Mono<Order>> create(@RequestBody OrderDto order) {
+    public ResponseEntity<Order> create(@RequestBody OrderDto order) {
         return ResponseEntity.ok(service.createOrder(order));
     }
 

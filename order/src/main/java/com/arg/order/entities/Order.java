@@ -24,6 +24,7 @@ public class Order {
     private Double price;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+    @Column(length = 1000)
     private String description;
 
     @CreatedDate
