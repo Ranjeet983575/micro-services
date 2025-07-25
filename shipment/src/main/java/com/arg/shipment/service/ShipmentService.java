@@ -1,31 +1,31 @@
 package com.arg.shipment.service;
 
-import com.arg.shipment.dto.ShipmentRequestDTO;
+import com.arg.shipment.dto.OrderDto;
 import com.arg.shipment.entities.Shipment;
 import com.arg.shipment.enums.ShipmentStatus;
 import com.arg.shipment.exception.ResourceNotFoundException;
 import com.arg.shipment.repository.ShipmentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class ShipmentService {
 
     private final ShipmentRepository shipmentRepository;
 
-    public ShipmentService(ShipmentRepository shipmentRepository) {
-        this.shipmentRepository = shipmentRepository;
-    }
 
-    public Shipment createShipment(ShipmentRequestDTO dto) {
+    public Shipment createShipment(OrderDto dto) {
         Shipment shipment = Shipment.builder()
-                .orderId(dto.getOrderId())
-                .shipmentAddress(dto.getShipmentAddress())
+                .orderId(dto.getId())
+                .shipmentAddress(dto.getAddress())
                 .shipmentStatus(ShipmentStatus.CREATED)
                 .shipmentDate(LocalDateTime.now())
+                .customerName(dto.getCustomerName())
+                .orderId(dto.getId())
                 .build();
-
         return shipmentRepository.save(shipment);
     }
 

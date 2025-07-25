@@ -1,6 +1,6 @@
 package com.arg.shipment.controller;
 
-import com.arg.shipment.dto.ShipmentRequestDTO;
+import com.arg.shipment.dto.OrderDto;
 import com.arg.shipment.dto.ShipmentResponseDTO;
 import com.arg.shipment.dto.ShipmentUpdateDTO;
 import com.arg.shipment.entities.Shipment;
@@ -20,7 +20,7 @@ public class ShipmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ShipmentResponseDTO> createShipment(@Valid @RequestBody ShipmentRequestDTO dto) {
+    public ResponseEntity<ShipmentResponseDTO> createShipment(@Valid @RequestBody OrderDto dto) {
         Shipment shipment = shipmentService.createShipment(dto);
         return ResponseEntity.ok(toDto(shipment));
     }

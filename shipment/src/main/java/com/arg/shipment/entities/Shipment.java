@@ -25,6 +25,8 @@ public class Shipment {
 
     private String shipmentAddress;
 
+    private String customerName;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ShipmentStatus shipmentStatus;// e.g., "CREATED", "IN_TRANSIT", "DELIVERED"
