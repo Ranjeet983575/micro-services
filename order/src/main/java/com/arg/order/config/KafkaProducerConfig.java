@@ -31,4 +31,6 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, OrderDto> orderkafkaTemplate() {
         return new KafkaTemplate<>(OrderProducerFactory());
     }
+
+
 }

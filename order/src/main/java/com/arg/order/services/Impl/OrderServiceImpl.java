@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setPrice(orderDto.getPrice());
         newOrder.setProductId(orderDto.getProductId());
         newOrder.setAddress(orderDto.getAddress());
-        newOrder.setStatus(OrderStatus.CREATED);
+        newOrder.setStatus(OrderStatus.CREATED.toString());
 
         Order savedOrder = repo.save(newOrder);
         orderDto.setId(savedOrder.getId());
@@ -47,13 +47,13 @@ public class OrderServiceImpl implements OrderService {
 
         try {
             PaymentResponseDto paymentResponse = paymentService.makePayment(paymentRequest).block();
-            savedOrder.setStatus(OrderStatus.PAYMENT);
+            savedOrder.setStatus(OrderStatus.PAYMENT.toString());
             System.out.println("Payment Response: " + paymentResponse);
             //Send Data to Shipment service
             shipmentProducer.sendOrder(orderDto);
             return repo.save(savedOrder);
         } catch (Exception e) {
-            savedOrder.setStatus(OrderStatus.FAILED);
+            savedOrder.setStatus(OrderStatus.FAILED.toString());
             savedOrder.setDescription("Payment failed: " + e.getMessage());
             repo.save(savedOrder);
             System.err.println("Payment failed: " + e.getMessage());
@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateStatus(Long orderId, OrderStatus status) {
+    public Order updateStatus(Long orderId, String status) {
         return repo.findById(orderId)
                 .map(order -> {
                     order.setStatus(status);

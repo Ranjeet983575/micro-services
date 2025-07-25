@@ -23,8 +23,7 @@ public class Order {
     private Long productId;
     private Integer quantity;
     private Double price;
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private String status;
     @Column(length = 1000)
     private String description;
 

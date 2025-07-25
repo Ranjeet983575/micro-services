@@ -19,5 +19,5 @@ public interface OrderService {
 
     void deleteOrder(Long id);
 
-    Order updateStatus(Long orderId, OrderStatus status);
+    Order updateStatus(Long orderId, String status);
 }
