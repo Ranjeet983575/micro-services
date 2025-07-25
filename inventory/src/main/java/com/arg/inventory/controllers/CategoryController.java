@@ -6,7 +6,6 @@ import com.arg.inventory.entities.Category;
 import com.arg.inventory.services.CategoryService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +61,7 @@ public class CategoryController {
 
 
     public String rateLimiterFallback(Throwable t) {
-        return "⚠\uFE0F Too many requests! Please try again later.";
+        return "Too many requests! Please try again later.";
     }
 
 }
