@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShipmentProducer {
 
-    private final KafkaTemplate<String, OrderDto> kafkaTemplate;
+    private final KafkaTemplate<String, OrderDto> orderkafkaTemplate;
 
     private final String topic = "ms-shipment-topic-1";
 
     public void sendOrder(OrderDto order) {
-        kafkaTemplate.send(topic, order.getProductId().toString(), order);
+        orderkafkaTemplate.send(topic, order.getProductId().toString(), order);
         System.out.println("Order sent: " + order);
     }
 }
