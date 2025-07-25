@@ -19,6 +19,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String customerName;
+    private String address;
     private Long productId;
     private Integer quantity;
     private Double price;

@@ -6,6 +6,7 @@ import com.arg.order.dto.PaymentResponseDto;
 import com.arg.order.entities.Order;
 import com.arg.order.enums.OrderStatus;
 import com.arg.order.exceptions.ResourceNotFoundException;
+import com.arg.order.kafka.ShipmentProducer;
 import com.arg.order.repositories.OrderRepository;
 import com.arg.order.services.OrderService;
 import com.arg.order.services.PaymentService;
@@ -20,6 +21,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository repo;
     private final PaymentService paymentService;
+    private final ShipmentProducer shipmentProducer;
 
     @Override
     public Order createOrder(OrderDto orderDto) {
@@ -29,9 +31,13 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setQuantity(orderDto.getQuantity());
         newOrder.setPrice(orderDto.getPrice());
         newOrder.setProductId(orderDto.getProductId());
+        newOrder.setAddress(orderDto.getAddress());
         newOrder.setStatus(OrderStatus.CREATED);
 
         Order savedOrder = repo.save(newOrder);
+        orderDto.setId(savedOrder.getId());
+
+        System.out.println("DTO+++" + orderDto);
 
         // Prepare Payment Request
         PaymentRequestDto paymentRequest = new PaymentRequestDto();
@@ -43,6 +49,8 @@ public class OrderServiceImpl implements OrderService {
             PaymentResponseDto paymentResponse = paymentService.makePayment(paymentRequest).block();
             savedOrder.setStatus(OrderStatus.PAYMENT);
             System.out.println("Payment Response: " + paymentResponse);
+            //Send Data to Shipment service
+            shipmentProducer.sendOrder(orderDto);
             return repo.save(savedOrder);
         } catch (Exception e) {
             savedOrder.setStatus(OrderStatus.FAILED);
@@ -52,7 +60,6 @@ public class OrderServiceImpl implements OrderService {
             return savedOrder;
         }
     }
-
 
     @Override
     public Order getOrderById(Long id) {
