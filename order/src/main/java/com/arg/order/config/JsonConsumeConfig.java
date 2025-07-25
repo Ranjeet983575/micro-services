@@ -15,6 +15,7 @@ import java.util.Map;
 
 @Configuration
 public class JsonConsumeConfig {
+
     @Bean
     ConsumerFactory<String, OrderDto> jsonConsumerFactory() {
         JsonDeserializer<OrderDto> jsonDeserializer = new JsonDeserializer<>(OrderDto.class);
