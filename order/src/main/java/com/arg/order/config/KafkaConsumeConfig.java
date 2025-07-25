@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -14,10 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class JsonConsumeConfig {
+public class KafkaConsumeConfig {
 
     @Bean
-    ConsumerFactory<String, OrderDto> jsonConsumerFactory() {
+    ConsumerFactory<String, OrderDto> orderConsumerFactory() {
         JsonDeserializer<OrderDto> jsonDeserializer = new JsonDeserializer<>(OrderDto.class);
         jsonDeserializer.addTrustedPackages("*");
         jsonDeserializer.setUseTypeMapperForKey(true);
@@ -28,5 +29,13 @@ public class JsonConsumeConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, jsonDeserializer);
 
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDto> orderKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderDto> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(orderConsumerFactory());
+        return factory;
     }
 }

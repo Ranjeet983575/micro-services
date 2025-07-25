@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class JsonProducerConfig {
+public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, OrderDto> jsonProducerFactory() {
+    public ProducerFactory<String, OrderDto> OrderProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -28,7 +28,7 @@ public class JsonProducerConfig {
     }
 
     @Bean(name = "jsonKafkaTemplate")
-    public KafkaTemplate<String, OrderDto> kafkaTemplate() {
-        return new KafkaTemplate<>(jsonProducerFactory());
+    public KafkaTemplate<String, OrderDto> orderkafkaTemplate() {
+        return new KafkaTemplate<>(OrderProducerFactory());
     }
 }
