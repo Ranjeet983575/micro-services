@@ -36,7 +36,7 @@ public class ShipmentController {
             @PathVariable Long shipmentId,
             @Valid @RequestBody ShipmentUpdateDTO updateDTO
     ) {
-        Shipment updated = shipmentService.updateShipmentStatus(shipmentId, updateDTO.getShipmentStatus());
+        Shipment updated = shipmentService.updateShipmentStatus(shipmentId, updateDTO.getShipmentStatus().toString());
         return ResponseEntity.ok(toDto(updated));
     }
 
@@ -45,7 +45,7 @@ public class ShipmentController {
                 .id(shipment.getId())
                 .orderId(shipment.getOrderId())
                 .shipmentAddress(shipment.getShipmentAddress())
-                .shipmentStatus(shipment.getShipmentStatus().toString())
+                .shipmentStatus(shipment.getShipmentStatus())
                 .shipmentDate(shipment.getShipmentDate())
                 .build();
     }

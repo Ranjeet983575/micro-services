@@ -1,4 +1,4 @@
-package com.arg.shipment.kafka;
+package com.arg.shipment.config;
 
 import com.arg.shipment.dto.OrderDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

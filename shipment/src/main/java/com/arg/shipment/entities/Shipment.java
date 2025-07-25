@@ -27,9 +27,8 @@ public class Shipment {
 
     private String customerName;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ShipmentStatus shipmentStatus;// e.g., "CREATED", "IN_TRANSIT", "DELIVERED"
+    private String shipmentStatus;// e.g., "CREATED", "IN_TRANSIT", "DELIVERED"
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
